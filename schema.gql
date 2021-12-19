@@ -17,3 +17,11 @@ type User {
 type Query {
   users(page: Int = 0, per_page: Int = 25, sort: String, q: String): [User!]!
 }
+
+type Mutation {
+  updateProfile(input: UpdateProfileInput!): User!
+}
+
+input UpdateProfileInput {
+  name: String!
+}
