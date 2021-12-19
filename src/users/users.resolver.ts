@@ -1,14 +1,14 @@
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/gql-auth.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { PubSub } from 'graphql-subscriptions';
 import { UsersArgs, User, UpdateProfileInput } from './dto';
 import { GetUsersQuery } from './queries/impl';
-import { UpdateUserCommand } from './commands/impl';
-
-const pubSub = new PubSub();
+import {
+  UpdateUserCommand,
+  ResendEmailVerificationCommand,
+} from './commands/impl';
 
 @Resolver((of) => User)
 export class UsersResolver {
@@ -31,6 +31,14 @@ export class UsersResolver {
   ): Promise<User> {
     return this.commandBus.execute(
       new UpdateUserCommand(user.sub, userData.name),
+    );
+  }
+
+  @Mutation((returns) => Boolean)
+  @UseGuards(GqlAuthGuard)
+  resendEmailVerification(@CurrentUser() user: any): Promise<boolean> {
+    return this.commandBus.execute(
+      new ResendEmailVerificationCommand(user.sub),
     );
   }
 }

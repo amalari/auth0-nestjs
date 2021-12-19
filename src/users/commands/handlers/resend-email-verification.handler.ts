@@ -2,21 +2,22 @@ import { ICommandHandler, CommandHandler } from '@nestjs/cqrs';
 import { HttpService } from '@nestjs/axios';
 import { AxiosResponse } from 'axios';
 import { lastValueFrom, map, catchError } from 'rxjs';
-import { UpdateUserCommand } from '../impl';
-import { User } from 'src/users/dto';
+import { ResendEmailVerificationCommand } from '../impl';
 import { HttpException } from '@nestjs/common';
 
-@CommandHandler(UpdateUserCommand)
-export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
+@CommandHandler(ResendEmailVerificationCommand)
+export class ResendEmailVerificationHandler
+  implements ICommandHandler<ResendEmailVerificationCommand>
+{
   constructor(private httpService: HttpService) {}
 
-  async execute(command: UpdateUserCommand): Promise<AxiosResponse<any>> {
-    const { userId, name } = command;
+  async execute(command: ResendEmailVerificationCommand): Promise<boolean> {
+    const { userId } = command;
     return lastValueFrom(
       this.httpService
-        .patch(
-          `${process.env.AUTH0_DOMAIN}${process.env.AUTH0_API_BASE_PATH}/users/${userId}`,
-          { name },
+        .post(
+          `${process.env.AUTH0_DOMAIN}${process.env.AUTH0_API_BASE_PATH}/jobs/verification-email`,
+          { user_id: userId },
           {
             headers: {
               'Content-Type': 'application/json',
@@ -26,11 +27,10 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
         )
         .pipe(
           catchError((e) => {
-            console.log(e);
             throw new HttpException(e.response.data, e.response.status);
           }),
-          map((res: AxiosResponse<any>) => {
-            return { ...res.data, id: res.data.user_id };
+          map(() => {
+            return true;
           }),
         ),
     );

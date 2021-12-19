@@ -20,6 +20,7 @@ type Query {
 
 type Mutation {
   updateProfile(input: UpdateProfileInput!): User!
+  resendEmailVerification: Boolean!
 }
 
 input UpdateProfileInput {
