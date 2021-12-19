@@ -3,8 +3,8 @@ import { GqlAuthGuard } from '../auth/gql-auth.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { UsersArgs, User, UpdateProfileInput } from './dto';
-import { GetUsersQuery } from './queries/impl';
+import { UsersArgs, User, UpdateProfileInput, Stats, StatsArgs } from './dto';
+import { GetUsersQuery, GetStatsQuery } from './queries/impl';
 import {
   UpdateUserCommand,
   ResendEmailVerificationCommand,
@@ -21,6 +21,15 @@ export class UsersResolver {
   @UseGuards(GqlAuthGuard)
   users(@Args() usersArgs: UsersArgs): Promise<User[]> {
     return this.queryBus.execute(new GetUsersQuery());
+  }
+
+  @Query((returns) => [Stats])
+  @UseGuards(GqlAuthGuard)
+  dailyStats(
+    @Args('from') from: string,
+    @Args('to') to: string,
+  ): Promise<Stats[]> {
+    return this.queryBus.execute(new GetStatsQuery(from, to));
   }
 
   @Mutation((returns) => User)

@@ -14,8 +14,17 @@ type User {
   logins_count: Int!
 }
 
+"""stats """
+type Stats {
+  id: ID!
+  date: String!
+  logins: Int!
+  signups: Int!
+}
+
 type Query {
   users(page: Int = 0, per_page: Int = 25, sort: String, q: String): [User!]!
+  dailyStats(to: String!, from: String!): [Stats!]!
 }
 
 type Mutation {
