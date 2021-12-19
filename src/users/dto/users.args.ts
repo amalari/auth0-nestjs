@@ -5,10 +5,15 @@ import { Max, Min } from 'class-validator';
 export class UsersArgs {
   @Field((type) => Int)
   @Min(0)
-  skip = 0;
+  page = 0;
 
   @Field((type) => Int)
   @Min(1)
-  @Max(50)
-  take = 25;
+  per_page = 25;
+
+  @Field({ nullable: true })
+  sort?: string;
+
+  @Field({ nullable: true })
+  q?: string;
 }
