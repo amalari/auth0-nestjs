@@ -11,6 +11,6 @@ export class Stats {
   @Field((type) => Int)
   logins: string;
 
-  @Field((type) => Int)
-  signups: string;
+  @Field(() => [String])
+  user_ids: string[];
 }

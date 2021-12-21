@@ -25,7 +25,7 @@ export class UsersResolver {
 
   @Query((returns) => [Stats])
   @UseGuards(GqlAuthGuard)
-  dailyStats(
+  dailyUserActiveLogs(
     @Args('from') from: string,
     @Args('to') to: string,
   ): Promise<Stats[]> {

@@ -19,12 +19,12 @@ type Stats {
   id: ID!
   date: String!
   logins: Int!
-  signups: Int!
+  user_ids: [String!]!
 }
 
 type Query {
   users(page: Int = 0, per_page: Int = 25, sort: String, q: String): [User!]!
-  dailyStats(to: String!, from: String!): [Stats!]!
+  dailyUserActiveLogs(to: String!, from: String!): [Stats!]!
 }
 
 type Mutation {
