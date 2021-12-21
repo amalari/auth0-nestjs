@@ -10,7 +10,6 @@ import { AuthzModule } from './auth/authz.module';
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: 'schema.gql',
-      introspection: true,
       playground: true,
     }),
   ],
